@@ -26,7 +26,16 @@ def test_make_flights_schema_rows_and_bounds():
     assert df["distance"].min() >= 80
     assert df["distance"].max() <= 3_000
     assert df["time"].min() >= 0
-    assert df["time"].max() <= 24
+    assert df["time"].max() < 24
+
+
+def test_delay_distribution_reaches_into_clip_range():
+    mod = load_module()
+    df = mod.make_flights(n_rows=200_000, seed=42)
+    # Both clip bounds must be genuinely active for the full dataset:
+    # early arrivals pile up at -60, extreme delays at 180.
+    assert df["delay"].min() == -60
+    assert df["delay"].max() == 180
 
 
 def test_make_flights_is_deterministic():

@@ -20,11 +20,12 @@ SEED = 42
 def make_flights(n_rows: int = N_ROWS, seed: int = SEED) -> pl.DataFrame:
     """Synthetic flights: arrival delay (min), distance (mi), departure hour."""
     rng = np.random.default_rng(seed)
+    delay = rng.normal(-5.0, 25.0, n_rows) + rng.gamma(2.0, 12.0, n_rows)
     return pl.DataFrame(
         {
-            "delay": np.clip(rng.gamma(2.0, 15.0, n_rows) - 20, -60, 180).round(0),
+            "delay": np.clip(delay, -60, 180).round(0),
             "distance": np.clip(rng.lognormal(6.2, 0.8, n_rows), 80, 3_000).round(0),
-            "time": (rng.beta(3.0, 2.0, n_rows) * 24).round(2),
+            "time": np.clip((rng.beta(3.0, 2.0, n_rows) * 24).round(2), 0.0, 23.99),
         }
     )
 
