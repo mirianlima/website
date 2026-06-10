@@ -1,5 +1,6 @@
 ---
 title: "Hello, DuckDB + polars"
+author: "Mirian Lima"
 description: "A smoke-test post: executed Python, a figure, a table, a callout."
 date: 2026-06-09
 categories: [python, duckdb, polars]
@@ -19,7 +20,10 @@ df = pl.DataFrame({
     "species": ["adelie", "gentoo", "chinstrap", "adelie", "gentoo"],
     "bill_mm": [38.8, 47.5, 48.8, 39.2, 46.1],
 })
-duckdb.sql("SELECT species, avg(bill_mm) AS avg_bill FROM df GROUP BY species ORDER BY avg_bill").pl()
+avg_bills = duckdb.sql(
+    "SELECT species, avg(bill_mm) AS avg_bill FROM df GROUP BY species ORDER BY avg_bill"
+).pl()
+avg_bills
 ```
 
 ::: {.callout-note}
@@ -35,8 +39,8 @@ DuckDB queries polars DataFrames in place — no copies, no serialization.
 import matplotlib.pyplot as plt
 
 fig, ax = plt.subplots(figsize=(6, 3))
-ax.bar(["adelie", "gentoo", "chinstrap"], [39.0, 46.8, 48.8])
-ax.set_ylabel("bill length (mm)")
+ax.bar(avg_bills["species"], avg_bills["avg_bill"])
+ax.set_ylabel("avg bill length (mm)")
 plt.tight_layout()
 plt.show()
 ```

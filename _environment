@@ -1,1 +1,2 @@
+# Requires `uv sync` first: path is relative to the project root.
 QUARTO_PYTHON=.venv/bin/python
