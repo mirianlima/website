@@ -2,7 +2,19 @@
 title: "Mirian Lima"
 subtitle: "Data science · AI engineering"
 toc: false
+listing:
+  id: latest-posts
+  contents: blog/posts
+  sort: "date desc"
+  type: default
+  max-items: 3
+  fields: [date, title, description]
 ---
 
 I build data systems and write about Python, DuckDB, and interactive
 data visualization. This site collects my blog, tutorials, and projects.
+
+## Latest writing
+
+::: {#latest-posts}
+:::

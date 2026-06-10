@@ -1,0 +1,52 @@
+---
+title: "Hello, DuckDB + polars"
+description: "A smoke-test post: executed Python, a figure, a table, a callout."
+date: 2026-06-09
+categories: [python, duckdb, polars]
+---
+
+This post exists to exercise the publishing pipeline end to end[^pipeline].
+
+[^pipeline]: Build-time execution, freeze, listings, RSS, and GitHub Pages deploy.
+
+## Querying a DataFrame with SQL
+
+```{python}
+import duckdb
+import polars as pl
+
+df = pl.DataFrame({
+    "species": ["adelie", "gentoo", "chinstrap", "adelie", "gentoo"],
+    "bill_mm": [38.8, 47.5, 48.8, 39.2, 46.1],
+})
+duckdb.sql("SELECT species, avg(bill_mm) AS avg_bill FROM df GROUP BY species ORDER BY avg_bill").pl()
+```
+
+::: {.callout-note}
+DuckDB queries polars DataFrames in place — no copies, no serialization.
+:::
+
+## A figure
+
+```{python}
+#| label: fig-bills
+#| fig-cap: "Bill length by species (toy data)."
+#| echo: false
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots(figsize=(6, 3))
+ax.bar(["adelie", "gentoo", "chinstrap"], [39.0, 46.8, 48.8])
+ax.set_ylabel("bill length (mm)")
+plt.tight_layout()
+plt.show()
+```
+
+As @fig-bills shows, the pipeline renders matplotlib output with captions.
+
+## A table
+
+| Tool   | Role            |
+| ------ | --------------- |
+| polars | DataFrames      |
+| DuckDB | SQL engine      |
+| Quarto | Publishing      |
