@@ -1,0 +1,10 @@
+---
+title: "About"
+toc: false
+---
+
+Data scientist / AI engineer. I work mostly in Python (polars, DuckDB,
+marimo) and TypeScript, and I care about reproducible, interactive
+data storytelling.
+
+Find me on [GitHub](https://github.com/mirianlima).

@@ -1,0 +1,27 @@
+meta:
+  name: Mirian Lima
+  link: https://mirianlima.github.io/website/
+
+color:
+  palette:
+    ink: "#1f2430"
+    paper: "#fdfdfc"
+    accent: "#0d6efd"
+  foreground: ink
+  background: paper
+  primary: accent
+
+typography:
+  fonts:
+    - family: Source Serif 4
+      source: google
+      weight: [400, 600, 700]
+    - family: Inter
+      source: google
+      weight: [400, 600]
+    - family: JetBrains Mono
+      source: google
+      weight: [400]
+  base: Inter
+  headings: Source Serif 4
+  monospace: JetBrains Mono

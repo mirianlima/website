@@ -1,0 +1,32 @@
+project:
+  type: website
+  render:
+    - "*.qmd"
+    - "*.md"
+    - "!ai_docs/**"
+
+website:
+  title: "Mirian Lima"
+  site-url: https://mirianlima.github.io/website/
+  description: "Data science, AI engineering, and interactive explorables."
+  navbar:
+    left:
+      - href: blog/index.qmd
+        text: Blog
+      - href: projects/index.qmd
+        text: Projects
+      - href: about.qmd
+        text: About
+    right:
+      - icon: rss
+        href: blog/index.xml
+      - icon: github
+        href: https://github.com/mirianlima
+
+format:
+  html:
+    theme: default
+    toc: true
+
+execute:
+  freeze: auto

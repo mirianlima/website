@@ -1,0 +1,8 @@
+---
+title: "Mirian Lima"
+subtitle: "Data science · AI engineering"
+toc: false
+---
+
+I build data systems and write about Python, DuckDB, and interactive
+data visualization. This site collects my blog, tutorials, and projects.
