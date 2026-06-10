@@ -1,0 +1,6 @@
+- title: This website
+  description: >
+    Quarto site with Mosaic/DuckDB-WASM explorables, marimo islands,
+    and a Substack-fed newsletter. Design spec and plans in the repo.
+  path: https://github.com/mirianlima/website
+  categories: [quarto, duckdb, mosaic]
