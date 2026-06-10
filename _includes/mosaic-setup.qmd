@@ -1,0 +1,9 @@
+```{ojs}
+//| echo: false
+//| output: false
+vg = {
+  const vg = await import("https://cdn.jsdelivr.net/npm/@uwdata/vgplot@0.26.0/+esm");
+  vg.coordinator().databaseConnector(await vg.wasmConnector());
+  return vg;
+}
+```

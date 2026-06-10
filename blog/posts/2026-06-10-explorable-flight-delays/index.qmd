@@ -1,0 +1,72 @@
+---
+title: "Explorable: 200k flight delays, cross-filtered in your browser"
+description: "Drag a selection on any histogram — Mosaic + DuckDB-WASM, no server."
+author: "Mirian Lima"
+date: 2026-06-10
+categories: [explorable, duckdb, mosaic]
+resources:
+  - data.parquet
+  - prepare_data.py
+toc: false
+---
+
+{{< include /_includes/mosaic-setup.qmd >}}
+
+Every chart below is backed by a DuckDB instance running in your browser
+via WebAssembly, querying a 200k-row parquet file. Drag horizontally on any
+histogram to cross-filter the other two. No server is involved.
+
+```{ojs}
+//| echo: false
+//| output: false
+brush = {
+  const dataUrl = new URL("data.parquet", document.baseURI).href;
+  await vg.coordinator().exec(`
+    CREATE TABLE IF NOT EXISTS flights AS
+    SELECT * FROM '${dataUrl}'
+  `);
+  return vg.Selection.crossfilter();
+}
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+makeHistogram = (column, label) =>
+  vg.plot(
+    vg.rectY(vg.from("flights", { filterBy: brush }), {
+      x: vg.bin(column),
+      y: vg.count(),
+      fill: "var(--bs-primary, steelblue)",
+      inset: 0.5,
+    }),
+    vg.intervalX({ as: brush }),
+    vg.xDomain(vg.Fixed),
+    vg.xLabel(label),
+    vg.yLabel("flights"),
+    vg.width(680),
+    vg.height(180),
+    vg.marginLeft(60),
+  )
+```
+
+```{ojs}
+//| echo: false
+makeHistogram("delay", "arrival delay (min)")
+```
+
+```{ojs}
+//| echo: false
+makeHistogram("time", "departure hour")
+```
+
+```{ojs}
+//| echo: false
+makeHistogram("distance", "distance (mi)")
+```
+
+How it works: build-time Python wrote `data.parquet` (see
+[`prepare_data.py`](prepare_data.py)); the page loads
+[Mosaic vgplot](https://idl.uw.edu/mosaic/) from a CDN and registers the
+parquet with DuckDB-WASM. The brush is a crossfilter `Selection` shared by
+all three plots.
