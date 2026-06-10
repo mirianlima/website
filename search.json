@@ -1,0 +1,79 @@
+[
+  {
+    "objectID": "projects/index.html",
+    "href": "projects/index.html",
+    "title": "Projects",
+    "section": "",
+    "text": "This website\n\n\n\nquarto\n\nduckdb\n\nmosaic\n\n\n\nQuarto site with Mosaic/DuckDB-WASM explorables, marimo islands, and a Substack-fed newsletter. Design spec and plans in the repo.\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "blog/posts/2026-06-10-explorable-flight-delays/index.html",
+    "href": "blog/posts/2026-06-10-explorable-flight-delays/index.html",
+    "title": "Explorable: 200k flight delays, cross-filtered in your browser",
+    "section": "",
+    "text": "vg = {\n  const vg = await import(\"https://cdn.jsdelivr.net/npm/@uwdata/vgplot@0.26.0/+esm\");\n  vg.coordinator().databaseConnector(await vg.wasmConnector());\n  return vg;\n}\n\n\n\n\n\n\nEvery chart below is backed by a DuckDB instance running in your browser via WebAssembly, querying a 200k-row parquet file. Drag horizontally on any histogram to cross-filter the other two. No server is involved.\n\nbrush = {\n  const dataUrl = new URL(\"data.parquet\", document.baseURI).href;\n  await vg.coordinator().exec(`\n    CREATE TABLE IF NOT EXISTS flights AS\n    SELECT * FROM '${dataUrl}'\n  `);\n  return vg.Selection.crossfilter();\n}\n\n\n\n\n\n\n\nmakeHistogram = (column, label) =&gt;\n  vg.plot(\n    vg.rectY(vg.from(\"flights\", { filterBy: brush }), {\n      x: vg.bin(column),\n      y: vg.count(),\n      fill: \"var(--bs-primary, steelblue)\",\n      inset: 0.5,\n    }),\n    vg.intervalX({ as: brush }),\n    vg.xDomain(vg.Fixed),\n    vg.xLabel(label),\n    vg.yLabel(\"flights\"),\n    vg.width(680),\n    vg.height(180),\n    vg.marginLeft(60),\n  )\n\n\n\n\n\n\n\nmakeHistogram(\"delay\", \"arrival delay (min)\")\n\n\n\n\n\n\n\nmakeHistogram(\"time\", \"departure hour\")\n\n\n\n\n\n\n\nmakeHistogram(\"distance\", \"distance (mi)\")\n\n\n\n\n\n\nHow it works: build-time Python wrote data.parquet (see prepare_data.py); the page loads Mosaic vgplot from a CDN and registers the parquet with DuckDB-WASM. The brush is a crossfilter Selection shared by all three plots."
+  },
+  {
+    "objectID": "blog/index.html",
+    "href": "blog/index.html",
+    "title": "Blog",
+    "section": "",
+    "text": "Explorable: 200k flight delays, cross-filtered in your browser\n\n\n\nexplorable\n\nduckdb\n\nmosaic\n\n\n\nDrag a selection on any histogram — Mosaic + DuckDB-WASM, no server.\n\n\n\n\n\nJun 10, 2026\n\n\nMirian Lima\n\n\n\n\n\n\n\n\n\n\n\n\nHello, DuckDB + polars\n\n\n\npython\n\nduckdb\n\npolars\n\n\n\nA smoke-test post: executed Python, a figure, a table, a callout.\n\n\n\n\n\nJun 9, 2026\n\n\nMirian Lima\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Data scientist / AI engineer. I work mostly in Python (polars, DuckDB, marimo) and TypeScript, and I care about reproducible, interactive data storytelling.\nFind me on GitHub."
+  },
+  {
+    "objectID": "blog/posts/2026-06-09-hello-duckdb-polars/index.html",
+    "href": "blog/posts/2026-06-09-hello-duckdb-polars/index.html",
+    "title": "Hello, DuckDB + polars",
+    "section": "",
+    "text": "This post exists to exercise the publishing pipeline end to end1."
+  },
+  {
+    "objectID": "blog/posts/2026-06-09-hello-duckdb-polars/index.html#querying-a-dataframe-with-sql",
+    "href": "blog/posts/2026-06-09-hello-duckdb-polars/index.html#querying-a-dataframe-with-sql",
+    "title": "Hello, DuckDB + polars",
+    "section": "Querying a DataFrame with SQL",
+    "text": "Querying a DataFrame with SQL\n\nimport duckdb\nimport polars as pl\n\ndf = pl.DataFrame({\n    \"species\": [\"adelie\", \"gentoo\", \"chinstrap\", \"adelie\", \"gentoo\"],\n    \"bill_mm\": [38.8, 47.5, 48.8, 39.2, 46.1],\n})\navg_bills = duckdb.sql(\n    \"SELECT species, avg(bill_mm) AS avg_bill FROM df GROUP BY species ORDER BY avg_bill\"\n).pl()\navg_bills\n\n\nshape: (3, 2)\n\n\n\nspecies\navg_bill\n\n\nstr\nf64\n\n\n\n\n\"adelie\"\n39.0\n\n\n\"gentoo\"\n46.8\n\n\n\"chinstrap\"\n48.8\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nDuckDB queries polars DataFrames in place — no copies, no serialization."
+  },
+  {
+    "objectID": "blog/posts/2026-06-09-hello-duckdb-polars/index.html#a-figure",
+    "href": "blog/posts/2026-06-09-hello-duckdb-polars/index.html#a-figure",
+    "title": "Hello, DuckDB + polars",
+    "section": "A figure",
+    "text": "A figure\n\n\n\n\n\n\n\n\nFigure 1: Bill length by species (toy data).\n\n\n\n\n\nAs Figure 1 shows, the pipeline renders matplotlib output with captions."
+  },
+  {
+    "objectID": "blog/posts/2026-06-09-hello-duckdb-polars/index.html#a-table",
+    "href": "blog/posts/2026-06-09-hello-duckdb-polars/index.html#a-table",
+    "title": "Hello, DuckDB + polars",
+    "section": "A table",
+    "text": "A table\n\n\n\nTool\nRole\n\n\n\n\npolars\nDataFrames\n\n\nDuckDB\nSQL engine\n\n\nQuarto\nPublishing"
+  },
+  {
+    "objectID": "blog/posts/2026-06-09-hello-duckdb-polars/index.html#footnotes",
+    "href": "blog/posts/2026-06-09-hello-duckdb-polars/index.html#footnotes",
+    "title": "Hello, DuckDB + polars",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nBuild-time execution, freeze, listings, RSS, and GitHub Pages deploy.↩︎"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Mirian Lima",
+    "section": "",
+    "text": "I build data systems and write about Python, DuckDB, and interactive data visualization. This site collects my blog, tutorials, and projects."
+  },
+  {
+    "objectID": "index.html#latest-writing",
+    "href": "index.html#latest-writing",
+    "title": "Mirian Lima",
+    "section": "Latest writing",
+    "text": "Latest writing\n\n\n\n\n\nExplorable: 200k flight delays, cross-filtered in your browser\n\n\nDrag a selection on any histogram — Mosaic + DuckDB-WASM, no server.\n\n\n\n\n\nJun 10, 2026\n\n\n\n\n\n\n\nHello, DuckDB + polars\n\n\nA smoke-test post: executed Python, a figure, a table, a callout.\n\n\n\n\n\nJun 9, 2026\n\n\n\n\n\nNo matching items"
+  }
+]

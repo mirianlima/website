@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Mirian Lima</title>
+<link>https://mirianlima.github.io/website/blog/</link>
+<atom:link href="https://mirianlima.github.io/website/blog/index.xml" rel="self" type="application/rss+xml"/>
+<description>Data science, AI engineering, and interactive explorables.</description>
+<generator>quarto-1.8.24</generator>
+<lastBuildDate>Wed, 10 Jun 2026 04:00:00 GMT</lastBuildDate>
+<item>
+  <title>Explorable: 200k flight delays, cross-filtered in your browser</title>
+  <dc:creator>Mirian Lima</dc:creator>
+  <link>https://mirianlima.github.io/website/blog/posts/2026-06-10-explorable-flight-delays/</link>
+  <description><![CDATA[ 
+
+
+
+
+<div class="cell hidden">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb1" data-startfrom="15" data-source-offset="0" style="background: #f1f3f5;"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 14;"><span id="cb1-15">vg <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {</span>
+<span id="cb1-16">  <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">const</span> vg <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">await</span> <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"https://cdn.jsdelivr.net/npm/@uwdata/vgplot@0.26.0/+esm"</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-17">  vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coordinator</span>()<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">databaseConnector</span>(<span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">await</span> vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">wasmConnector</span>())<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-18">  <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb1-19">}</span></code></pre></div></div>
+<div class="cell-output cell-output-display hidden">
+<div id="ojs-cell-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<p>Every chart below is backed by a DuckDB instance running in your browser via WebAssembly, querying a 200k-row parquet file. Drag horizontally on any histogram to cross-filter the other two. No server is involved.</p>
+<div class="cell hidden">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb2" data-startfrom="29" data-source-offset="0" style="background: #f1f3f5;"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 28;"><span id="cb2-29">brush <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {</span>
+<span id="cb2-30">  <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">const</span> dataUrl <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">new</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">URL</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"data.parquet"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">document</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">baseURI</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">href</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb2-31">  <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">await</span> vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coordinator</span>()<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exec</span>(<span class="vs" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span></span>
+<span id="cb2-32"><span class="vs" style="color: #20794D;
+background-color: null;
+font-style: inherit;">    CREATE TABLE IF NOT EXISTS flights AS</span></span>
+<span id="cb2-33"><span class="vs" style="color: #20794D;
+background-color: null;
+font-style: inherit;">    SELECT * FROM '</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">${</span>dataUrl<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="vs" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span></span>
+<span id="cb2-34"><span class="vs" style="color: #20794D;
+background-color: null;
+font-style: inherit;">  `</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb2-35">  <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Selection</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">crossfilter</span>()<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb2-36">}</span></code></pre></div></div>
+<div class="cell-output cell-output-display hidden">
+<div id="ojs-cell-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell hidden">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb3" data-startfrom="42" data-source-offset="0" style="background: #f1f3f5;"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 41;"><span id="cb3-42">makeHistogram <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (column<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> label) <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">=&gt;</span></span>
+<span id="cb3-43">  vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot</span>(</span>
+<span id="cb3-44">    vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rectY</span>(vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">from</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"flights"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> { <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">filterBy</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span> brush })<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> {</span>
+<span id="cb3-45">      <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">x</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span> vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">bin</span>(column)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb3-46">      <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">y</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span> vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">count</span>()<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb3-47">      <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">fill</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"var(--bs-primary, steelblue)"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb3-48">      <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">inset</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb3-49">    })<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb3-50">    vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">intervalX</span>({ <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">as</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span> brush })<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb3-51">    vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">xDomain</span>(vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Fixed</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb3-52">    vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">xLabel</span>(label)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb3-53">    vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">yLabel</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"flights"</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb3-54">    vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">width</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">680</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb3-55">    vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">height</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">180</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb3-56">    vg<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">marginLeft</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">60</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb3-57">  )</span></code></pre></div></div>
+<div class="cell-output cell-output-display hidden">
+<div id="ojs-cell-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb4" data-startfrom="62" data-source-offset="0" style="background: #f1f3f5;"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 61;"><span id="cb4-62"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">makeHistogram</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"delay"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"arrival delay (min)"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-4" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb5" data-startfrom="67" data-source-offset="0" style="background: #f1f3f5;"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 66;"><span id="cb5-67"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">makeHistogram</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"time"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"departure hour"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-5" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb6" data-startfrom="72" data-source-offset="0" style="background: #f1f3f5;"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 71;"><span id="cb6-72"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">makeHistogram</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"distance"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"distance (mi)"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-6" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>How it works: build-time Python wrote <code>data.parquet</code> (see <a href="prepare_data.py"><code>prepare_data.py</code></a>); the page loads <a href="https://idl.uw.edu/mosaic/">Mosaic vgplot</a> from a CDN and registers the parquet with DuckDB-WASM. The brush is a crossfilter <code>Selection</code> shared by all three plots.</p>
+
+
+
+ ]]></description>
+  <category>explorable</category>
+  <category>duckdb</category>
+  <category>mosaic</category>
+  <guid>https://mirianlima.github.io/website/blog/posts/2026-06-10-explorable-flight-delays/</guid>
+  <pubDate>Wed, 10 Jun 2026 04:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Hello, DuckDB + polars</title>
+  <dc:creator>Mirian Lima</dc:creator>
+  <link>https://mirianlima.github.io/website/blog/posts/2026-06-09-hello-duckdb-polars/</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>This post exists to exercise the publishing pipeline end to end<sup>1</sup>.</p>
+<section id="querying-a-dataframe-with-sql" class="level2">
+<h2 class="anchored" data-anchor-id="querying-a-dataframe-with-sql">Querying a DataFrame with SQL</h2>
+<div id="b94f188c" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> duckdb</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> polars <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pl</span>
+<span id="cb1-3"></span>
+<span id="cb1-4">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pl.DataFrame({</span>
+<span id="cb1-5">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"species"</span>: [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"adelie"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gentoo"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"chinstrap"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"adelie"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gentoo"</span>],</span>
+<span id="cb1-6">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bill_mm"</span>: [<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">38.8</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">47.5</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">48.8</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">39.2</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">46.1</span>],</span>
+<span id="cb1-7">})</span>
+<span id="cb1-8">avg_bills <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> duckdb.sql(</span>
+<span id="cb1-9">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"SELECT species, avg(bill_mm) AS avg_bill FROM df GROUP BY species ORDER BY avg_bill"</span></span>
+<span id="cb1-10">).pl()</span>
+<span id="cb1-11">avg_bills</span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 2)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">species</th>
+<th data-quarto-table-cell-role="th">avg_bill</th>
+</tr>
+<tr class="even">
+<td>str</td>
+<td>f64</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"adelie"</td>
+<td>39.0</td>
+</tr>
+<tr class="even">
+<td>"gentoo"</td>
+<td>46.8</td>
+</tr>
+<tr class="odd">
+<td>"chinstrap"</td>
+<td>48.8</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>DuckDB queries polars DataFrames in place — no copies, no serialization.</p>
+</div>
+</div>
+</section>
+<section id="a-figure" class="level2">
+<h2 class="anchored" data-anchor-id="a-figure">A figure</h2>
+<div id="cell-fig-bills" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display">
+<div id="fig-bills" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bills-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://mirianlima.github.io/website/blog/posts/2026-06-09-hello-duckdb-polars/index_files/figure-html/fig-bills-output-1.png" width="566" height="278" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bills-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Bill length by species (toy data).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>As Figure&nbsp;1 shows, the pipeline renders matplotlib output with captions.</p>
+</section>
+<section id="a-table" class="level2">
+<h2 class="anchored" data-anchor-id="a-table">A table</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Tool</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>polars</td>
+<td>DataFrames</td>
+</tr>
+<tr class="even">
+<td>DuckDB</td>
+<td>SQL engine</td>
+</tr>
+<tr class="odd">
+<td>Quarto</td>
+<td>Publishing</td>
+</tr>
+</tbody>
+</table>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Build-time execution, freeze, listings, RSS, and GitHub Pages deploy.↩︎</p></li>
+</ol>
+</section></div> ]]></description>
+  <category>python</category>
+  <category>duckdb</category>
+  <category>polars</category>
+  <guid>https://mirianlima.github.io/website/blog/posts/2026-06-09-hello-duckdb-polars/</guid>
+  <pubDate>Tue, 09 Jun 2026 04:00:00 GMT</pubDate>
+</item>
+</channel>
+</rss>
