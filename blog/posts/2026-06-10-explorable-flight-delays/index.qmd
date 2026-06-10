@@ -10,7 +10,15 @@ resources:
 toc: false
 ---
 
-{{< include /_includes/mosaic-setup.qmd >}}
+```{ojs}
+//| echo: false
+//| output: false
+vg = {
+  const vg = await import("https://cdn.jsdelivr.net/npm/@uwdata/vgplot@0.26.0/+esm");
+  vg.coordinator().databaseConnector(await vg.wasmConnector());
+  return vg;
+}
+```
 
 Every chart below is backed by a DuckDB instance running in your browser
 via WebAssembly, querying a 200k-row parquet file. Drag horizontally on any

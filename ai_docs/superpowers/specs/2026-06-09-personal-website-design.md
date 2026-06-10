@@ -56,7 +56,9 @@ website/
 │       ├── index.qmd            # the post
 │       └── data.parquet         # only for explorable posts
 ├── projects/index.qmd           # project cards (Quarto listing, yaml-driven)
-├── _includes/mosaic-setup.qmd   # shared vg + wasmConnector bootstrap (tier 2)
+├── (explorable posts inline a 6-line vg bootstrap cell — a shared
+│    _includes setup file trips Quarto's OJS block-count warning;
+│    revisit as an include-in-header partial at explorable post #2)
 ├── _extensions/                 # quarto-marimo, vendored via `quarto add`
 ├── pyproject.toml + uv.lock     # python env for build-time execution
 ├── _freeze/                     # committed render cache
